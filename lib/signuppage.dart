@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -165,11 +166,16 @@ class _SignupPageState extends State<SignupPage> {
                 width: double.infinity,
                 color: Colors.blueGrey.shade300,
                 child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       String name = tname.text;
                       String email = temail.text;
                       String contact = tcontact.text;
                       String pass = tpassword.text;
+
+                      DateTime dt = DateTime.now();
+                      String imagename =
+                          "$name${dt.year}${dt.month}${dt.day}${dt.hour}${dt.minute}${dt.second}";
+
                       if (tname.text.isEmpty) {
                         nametext = "Name is Required";
                       } else {
@@ -196,7 +202,20 @@ class _SignupPageState extends State<SignupPage> {
                               style: TextStyle(color: Colors.white)),
                         ));
                       }
-
+                      var formData = FormData.fromMap({
+                        'name': name,
+                        'contact': contact,
+                        'email': email,
+                        'pass': pass,
+                        'file': await MultipartFile.fromFile(imagepath,
+                            filename: imagename),
+                      });
+                      var response = await Dio().post(
+                          'https://learnwithproject.000webhostapp.com/login/web_insert.php',
+                          data: formData);
+                      print(response);
+                      Map m=response.data;
+                      print(m);
                       setState(() {});
                     },
                     child: Text(
