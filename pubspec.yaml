@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker:
   dio:
+  shared_preferences: 
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +60,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - mypng/img.png
+    - mypng/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

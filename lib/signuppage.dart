@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:login_ui/loginpage.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -207,15 +209,30 @@ class _SignupPageState extends State<SignupPage> {
                         'contact': contact,
                         'email': email,
                         'pass': pass,
+                        'userid':'',
                         'file': await MultipartFile.fromFile(imagepath,
                             filename: imagename),
                       });
                       var response = await Dio().post(
                           'https://learnwithproject.000webhostapp.com/login/web_insert.php',
                           data: formData);
-                      print(response);
-                      Map m=response.data;
-                      print(m);
+                      print(response.data);
+                      Map m = jsonDecode(response.data);
+                      int result = m['result'];
+                      if (result == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Sorry! Try again.")));
+                      } else if (result == 1) {
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context) {
+                            return LoginPage();
+                          },
+                        ));
+                      }
+                      if (result == 2) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("User already exists.")));
+                      }
                       setState(() {});
                     },
                     child: Text(
